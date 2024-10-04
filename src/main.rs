@@ -1,3 +1,7 @@
+use std::env;
+use workjournal::Command;
+
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = env::args().collect();
+    println!("args: {:?}", args);
 }
