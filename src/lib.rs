@@ -79,7 +79,8 @@ impl Command {
     }
 }
 
-enum Intent {
+pub enum Intent {
     ChangeActive(u32),
     MakeNote(String),
+    NoCmd,
 }
