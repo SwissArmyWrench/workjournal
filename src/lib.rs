@@ -3,6 +3,7 @@
 use std::path::PathBuf;
 // use chrono::prelude::*;
 use std::fs::OpenOptions;
+use std::io::Write;
 use std::fs::File;
 
 pub fn wip() {
@@ -11,7 +12,9 @@ pub fn wip() {
         logging_folder: PathBuf::from("/home/truepenny/logs_from_work"),
         file_extension: Some(".txt")
     };
-    let file = config.get_today_handle();
+    let mut file = config.get_today_handle();
+    // std::fs::write(format!("The active job is {}", config.active_job).as_bytes(), file);
+    file.write(format!("The active job is {}\n", config.active_job).as_bytes());
 }
 
 
