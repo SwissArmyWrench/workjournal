@@ -7,5 +7,6 @@ edition = "2021"
 chrono = "0.4.38"
 clap = { version = "4.5.19", features = ["cargo"] }
 directories = "5.0.1"
+regex = { version = "1.11.0", features = ["std"] }
 serde = { version = "1.0.210", features = ["derive"] }
 serde_yaml = "0.9.34"

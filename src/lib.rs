@@ -1,12 +1,12 @@
 // Lib file for Workjournal
 
 use std::path::PathBuf;
-// use chrono::prelude::*;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::Write;
 use directories::ProjectDirs;
 use serde::{Serialize, Deserialize};
+use regex::Regex;
 
 pub fn wip() {
     /* let config: Config = Config {
@@ -16,13 +16,14 @@ pub fn wip() {
     }; */
 
     let config = Config::load().unwrap();
+    // change_job_yaml(49999);
     
     /*
     let mut file = config.get_today_handle();
     std::fs::write(format!("The active job is {}", config.active_job).as_bytes(), file);
     file.write(format!("The active job is {}\n", config.active_job).as_bytes());
     */
-    println!("Active job: {}", config.active_job);
+    // println!("Active job: {}", config.active_job);
 }
 
 #[derive(Serialize, Deserialize)]
@@ -45,7 +46,7 @@ impl Config {
         }
         let mut fullpath = self.logging_folder.clone();
         fullpath.push(formatted.clone());
-        println!("{}", fullpath.display());
+        // println!("{}", fullpath.display());
         match OpenOptions::new().append(true).open(fullpath.clone()) {
             Ok(file) => file,
             Err(_) => OpenOptions::new()
@@ -75,11 +76,12 @@ pub struct Command {
 
 impl Command {
     pub fn run(self) {
-        println!("Running...");
+        // println!("Running...");
         match self.intent {
             Intent::MakeNote(note) => {
                 let _ = &self.config.get_today_handle().write(format!("#{0} {note}\n", self.config.active_job.to_string()).as_bytes());
             }
+            Intent::ChangeActive(job_number) => { change_job_yaml(job_number); }
             _ => {}
         }
     }
@@ -95,4 +97,29 @@ pub enum Intent {
     ChangeActive(u32),
     MakeNote(String),
     NoCmd,
+}
+
+
+fn change_job_yaml(newjob: u32) {
+    // Get the yaml config as a string
+    let dirs = ProjectDirs::from("com", "SwissArmyWrench", "Workjournal").unwrap(); // SAFE
+    let mut config_path = dirs.config_dir().to_owned();
+    config_path.push("config.yaml");
+    let config_string = std::fs::read_to_string(&config_path).expect("Unable to open config file to change jobs");
+
+     
+    // Regex to match on the key:value pair in the YAML
+    let regex = Regex::new(r"active_job: (?<number>\d{5})").unwrap();
+    let after = regex.replace_all(&config_string, format!("active_job: {}", newjob.to_string()));
+    // println!("{}", after);
+    match std::fs::remove_file(&config_path) {
+        Ok(_) => {}
+        Err(_) => { println!("Unable to remove config file in order to re-write"); }
+    }
+    let mut config_file = File::create(&config_path).expect("Unable to re-write new config");
+    let _ = config_file.write(after.as_bytes());
+
+    
+
+
 }
