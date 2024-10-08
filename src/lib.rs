@@ -56,7 +56,7 @@ impl Config {
         }
     }
 
-    fn load() -> Result<Config, serde_yaml::Error> {
+    pub fn load() -> Result<Config, serde_yaml::Error> {
         let dirs = ProjectDirs::from("com", "SwissArmyWrench", "Workjournal").unwrap(); // SAFE
         let mut config_path = dirs.config_dir().to_owned();
         config_path.push("config.yaml");
@@ -69,13 +69,25 @@ impl Config {
 
 pub struct Command {
     args: Vec<String>,
-    intent: Intent
-    // config:
+    intent: Intent,
+    config: Config
 }
 
 impl Command {
-    fn run(self) {
+    pub fn run(self) {
         println!("Running...");
+        match self.intent {
+            Intent::MakeNote(note) => {
+                let _ = &self.config.get_today_handle().write(format!("#{0} {note}\n", self.config.active_job.to_string()).as_bytes());
+            }
+            _ => {}
+        }
+    }
+
+    pub fn new(args: Vec<String>, intent: Intent, config: Config) -> Command {
+        Command { args: args,
+            intent: intent,
+            config: config }
     }
 }
 

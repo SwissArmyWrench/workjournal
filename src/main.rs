@@ -1,5 +1,4 @@
 use std::env;
-use workjournal::Command;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -7,7 +6,9 @@ fn main() {
     workjournal::wip();
     
     let mut intent: workjournal::Intent = workjournal::Intent::NoCmd;
-    if args[1] == "chactive" {
+    if args.len() == 1 {
+        println!("Interactive mode not yet ready!")
+    } else if args[1] == "chactive" {
         intent = workjournal::Intent::ChangeActive(args[2].parse::<u32>().unwrap());
         println!("chactive success!");
     } else if args[1] == "mknote" {
@@ -16,5 +17,7 @@ fn main() {
         println!("{}", &note);
         intent = workjournal::Intent::MakeNote(note);
     }
+
+    workjournal::Command::new(args, intent, workjournal::Config::load().unwrap()).run();
     
 }
