@@ -79,7 +79,8 @@ impl Command {
         // println!("Running...");
         match self.intent {
             Intent::MakeNote(note) => {
-                let _ = &self.config.get_today_handle().write(format!("#{0} {note}\n", self.config.active_job.to_string()).as_bytes());
+                let time = chrono::Local::now().time().format("%H:%M").to_string();
+                let _ = &self.config.get_today_handle().write(format!("{time} #{0} {note}\n", self.config.active_job.to_string()).as_bytes());
             }
             Intent::ChangeActive(job_number) => { change_job_yaml(job_number); }
             _ => {}

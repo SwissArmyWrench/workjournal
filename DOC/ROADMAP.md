@@ -7,7 +7,7 @@
 - [ ] Interactive mode
 - [ ] List out all orders interacted with on a given day
 - [ ] list out all comments for a given order
-- [ ] automatically timestamp entries added using workjournal
+- [x] automatically timestamp entries added using workjournal
 
 # Future features for later releases
 
