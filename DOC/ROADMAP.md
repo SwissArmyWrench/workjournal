@@ -1,6 +1,6 @@
 # MVP / 1.0
 
-- [/] Set an active order so you dont' need to type the order number every time
+- [x] Set an active order so you dont' need to type the order number every time
 - [x] Automatically enter comments into the correct daily file / create file if it doesn't exist yet
 - [ ] Track "outstanding" tickets
 - [ ] Imperative mode
