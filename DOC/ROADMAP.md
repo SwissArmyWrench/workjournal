@@ -2,7 +2,7 @@
 
 - [x] Set an active order so you dont' need to type the order number every time
 - [x] Automatically enter comments into the correct daily file / create file if it doesn't exist yet
-- [ ] Imperative mode
+- [x] Imperative mode
 - [ ] list out all comments for a given order
 - [x] automatically timestamp entries added using workjournal
 
