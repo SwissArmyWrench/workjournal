@@ -7,6 +7,7 @@ use std::io::Write;
 use directories::ProjectDirs;
 use serde::{Serialize, Deserialize};
 use regex::Regex;
+use grep::matcher::Matcher;
 
 pub fn wip() {
     /* let config: Config = Config {
@@ -16,6 +17,9 @@ pub fn wip() {
     }; */
 
     let config = Config::load().unwrap();
+    // let path_to_file = PathBuf::from("/home/truepenny/logs_from_work/2024-10-8-xL.txt");
+    let file = File::open("/home/truepenny/logs_from_work/2024-10-08-DL.txt").unwrap();
+    println!("{:?}", grep_as_lines(file, "#49882".to_string()));
     // change_job_yaml(49999);
     
     /*
@@ -123,4 +127,33 @@ fn change_job_yaml(newjob: u32) {
     
 
 
+}
+
+fn grep_as_lines(path: File, query: String) -> Vec<String> {
+    // Vec to store the matches to the query
+    let mut matches = Vec::<String>::new();
+
+    // Build searcher
+    let mut builder = grep::searcher::SearcherBuilder::new();
+    builder.line_number(true);
+    let mut searcher = builder.build();
+
+    
+    // Build matcher
+    // TODO: build code to convert the query to the regex matcher
+    let matcher = grep::regex::RegexMatcher::new(&query).unwrap();
+    
+    // Build UTF8 sink
+    let sink = grep::searcher::sinks::UTF8(| line_number, line | {
+        match matcher.find(line.as_bytes()).unwrap() {
+            Some(_) => { matches.push(line.to_string()); },
+            None => {}
+        }
+        Ok(true)
+    });
+
+    let out = searcher.search_file(&matcher, &path, sink);
+    println!("{:?}", out);
+    // return matches after running the search
+    matches
 }
