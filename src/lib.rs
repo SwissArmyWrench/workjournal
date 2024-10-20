@@ -1,14 +1,13 @@
 // Lib file for Workjournal
 
-use std::path::PathBuf;
-use std::fs::{File, OpenOptions, read_dir};
-use std::io::Write;
 use directories::ProjectDirs;
-use serde::{Serialize, Deserialize};
-use regex::Regex;
 use grep::matcher::Matcher;
 use natural_sort_rs::{Natural, NaturalSort};
-
+use regex::Regex;
+use serde::{Deserialize, Serialize};
+use std::fs::{read_dir, File, OpenOptions};
+use std::io::Write;
+use std::path::PathBuf;
 
 /*pub fn wip() {
     // WIP
@@ -32,8 +31,8 @@ impl Config {
         let mut formatted: String = date.format("%Y-%m-%d").to_string();
         formatted.push_str("-DL");
         match &self.file_extension {
-            Some(extension) => {formatted = format!("{}{}", formatted, extension)} // .push_str(extension), // Add file extension if specified
-            None => {}                                        // do nothing
+            Some(extension) => formatted = format!("{}{}", formatted, extension), // .push_str(extension), // Add file extension if specified
+            None => {}                                                            // do nothing
         }
         let mut fullpath = self.logging_folder.clone();
         fullpath.push(formatted.clone());
@@ -52,17 +51,17 @@ impl Config {
         let dirs = ProjectDirs::from("com", "SwissArmyWrench", "Workjournal").unwrap(); // SAFE
         let mut config_path = dirs.config_dir().to_owned();
         config_path.push("config.yaml");
-        let reader = File::open(config_path).expect("The system was unable to open the config file");
+        let reader =
+            File::open(config_path).expect("The system was unable to open the config file");
         let config: Result<Config, serde_yaml::Error> = serde_yaml::from_reader(reader);
         config // needed to define a result to turn in order to give the type hint above
-        
     }
 }
 
 pub struct Command {
     args: Vec<String>,
     intent: Intent,
-    config: Config
+    config: Config,
 }
 
 impl Command {
@@ -71,16 +70,20 @@ impl Command {
         match self.intent {
             Intent::MakeNote(note) => {
                 let time = chrono::Local::now().time().format("%H:%M").to_string();
-                let _ = &self.config.get_today_handle().write(format!("{time} #{0} {note}\n", self.config.active_job.to_string()).as_bytes());
+                let _ = &self.config.get_today_handle().write(
+                    format!("{time} #{0} {note}\n", self.config.active_job.to_string()).as_bytes(),
+                );
             }
-            Intent::ChangeActive(job_number) => { change_job_yaml(job_number); }
+            Intent::ChangeActive(job_number) => {
+                change_job_yaml(job_number);
+            }
             Intent::PrintNotes(job_number) => {
                 let pathlist = get_paths(&self.config.logging_folder);
                 for path in pathlist {
                     println!("Job {job_number} in {}", &path);
-                    let notes = grep_as_lines(PathBuf::from(&path), format!("#{}", job_number.to_string()));
+                    let notes =
+                        grep_as_lines(PathBuf::from(&path), format!("#{}", job_number.to_string()));
                     notes.iter().for_each(|note| println!("{}\n", note));
-
                 }
             }
             _ => {}
@@ -88,9 +91,11 @@ impl Command {
     }
 
     pub fn new(args: Vec<String>, intent: Intent, config: Config) -> Command {
-        Command { args: args,
+        Command {
+            args: args,
             intent: intent,
-            config: config }
+            config: config,
+        }
     }
 }
 
@@ -101,31 +106,30 @@ pub enum Intent {
     NoCmd,
 }
 
-
 fn change_job_yaml(newjob: u32) {
     // Get the yaml config as a string
     let dirs = ProjectDirs::from("com", "SwissArmyWrench", "Workjournal").unwrap(); // SAFE
     let mut config_path = dirs.config_dir().to_owned();
     config_path.push("config.yaml");
-    let config_string = std::fs::read_to_string(&config_path).expect("Unable to open config file to change jobs");
+    let config_string =
+        std::fs::read_to_string(&config_path).expect("Unable to open config file to change jobs");
 
-     
     // Regex to match on the key:value pair in the YAML
     let regex = Regex::new(r"active_job: (?<number>\d{5})").unwrap();
-    let after = regex.replace_all(&config_string, format!("active_job: {}", newjob.to_string()));
+    let after = regex.replace_all(
+        &config_string,
+        format!("active_job: {}", newjob.to_string()),
+    );
     // println!("{}", after);
     match std::fs::remove_file(&config_path) {
         Ok(_) => {}
-        Err(_) => { println!("Unable to remove config file in order to re-write"); }
+        Err(_) => {
+            println!("Unable to remove config file in order to re-write");
+        }
     }
     let mut config_file = File::create(&config_path).expect("Unable to re-write new config");
     let _ = config_file.write(after.as_bytes());
-
-    
-
-
 }
-
 
 fn grep_as_lines(path: PathBuf, query: String) -> Vec<String> {
     // Vec to store the matches to the query
@@ -136,15 +140,16 @@ fn grep_as_lines(path: PathBuf, query: String) -> Vec<String> {
     builder.line_number(true);
     let mut searcher = builder.build();
 
-    
     // Build matcher
     // TODO: build code to convert the query to the regex matcher
     let matcher = grep::regex::RegexMatcher::new(&query).unwrap();
-    
+
     // Build UTF8 sink
-    let sink = grep::searcher::sinks::UTF8(| _line_number, line | {
+    let sink = grep::searcher::sinks::UTF8(|_line_number, line| {
         match matcher.find(line.as_bytes()).unwrap() {
-            Some(_) => { matches.push(trim_newline(line.to_string())); },
+            Some(_) => {
+                matches.push(trim_newline(line.to_string()));
+            }
             None => {}
         }
         Ok(true)
@@ -167,7 +172,10 @@ fn trim_newline(mut string: String) -> String {
 }
 
 fn get_paths(dir: &PathBuf) -> Vec<String> {
-    let mut ls: Vec<_> = read_dir(dir).expect("Unable to read file system").map(|opt| { opt.unwrap().path().to_string_lossy().into_owned()} ).collect();
+    let mut ls: Vec<_> = read_dir(dir)
+        .expect("Unable to read file system")
+        .map(|opt| opt.unwrap().path().to_string_lossy().into_owned())
+        .collect();
     ls.natural_sort::<str>();
     ls
 }
