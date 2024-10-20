@@ -1,0 +1,3 @@
+active_job: 1 
+logging_folder: /path/to/folder # CHANGE THIS
+file_extension: .txt # This value is optional

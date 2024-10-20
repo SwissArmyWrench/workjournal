@@ -24,6 +24,8 @@ This command prints out all of the notes taken about a given job number. It uses
 
 ## Configuration
 
+An example configuration file is provided in DOC/config.yaml.
+
 ### Location of the configuration file
 
 Workjournal uses the `directories` crate to handle the locations of config directories in a platform agnostic way. Based on your system, here is where workjournal will expect to find the config.yaml file:
