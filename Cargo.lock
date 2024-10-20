@@ -418,6 +418,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "natural-sort-rs"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a82894acea12c9929f17bc395fc17ed1d23b4caec2812a275711ad6d3adcf757"
+
+[[package]]
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -852,6 +858,7 @@ dependencies = [
  "clap",
  "directories",
  "grep",
+ "natural-sort-rs",
  "regex",
  "serde",
  "serde_yaml",
