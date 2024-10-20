@@ -1,34 +1,21 @@
 // Lib file for Workjournal
 
 use std::path::PathBuf;
-use std::fs::File;
-use std::fs::OpenOptions;
+use std::fs::{File, OpenOptions, read_dir};
 use std::io::Write;
 use directories::ProjectDirs;
 use serde::{Serialize, Deserialize};
 use regex::Regex;
 use grep::matcher::Matcher;
+use natural_sort_rs::{Natural, NaturalSort};
 
-pub fn wip() {
-    /* let config: Config = Config {
-        active_job: 49390,
-        logging_folder: PathBuf::from("/home/truepenny/logs_from_work"),
-        file_extension: Some(String::from(".txt")),
-    }; */
 
-    let config = Config::load().unwrap();
-    // let path_to_file = PathBuf::from("/home/truepenny/logs_from_work/2024-10-8-xL.txt");
-    let file = File::open("/home/truepenny/logs_from_work/2024-10-08-DL.txt").unwrap();
-    println!("{:?}", grep_as_lines(file, "#49882".to_string()));
-    // change_job_yaml(49999);
-    
-    /*
-    let mut file = config.get_today_handle();
-    std::fs::write(format!("The active job is {}", config.active_job).as_bytes(), file);
-    file.write(format!("The active job is {}\n", config.active_job).as_bytes());
-    */
-    // println!("Active job: {}", config.active_job);
-}
+/*pub fn wip() {
+    // WIP
+    let config = Config::load();
+    let command = Command { args: Vec::new(), config: config.expect("couldn't load config"), intent: Intent::PrintNotes(49882) };
+    command.run();
+}*/
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -87,6 +74,15 @@ impl Command {
                 let _ = &self.config.get_today_handle().write(format!("{time} #{0} {note}\n", self.config.active_job.to_string()).as_bytes());
             }
             Intent::ChangeActive(job_number) => { change_job_yaml(job_number); }
+            Intent::PrintNotes(job_number) => {
+                let pathlist = get_paths(&self.config.logging_folder);
+                for path in pathlist {
+                    println!("Job {job_number} in {}", &path);
+                    let notes = grep_as_lines(PathBuf::from(&path), format!("#{}", job_number.to_string()));
+                    notes.iter().for_each(|note| println!("{}\n", note));
+
+                }
+            }
             _ => {}
         }
     }
@@ -101,6 +97,7 @@ impl Command {
 pub enum Intent {
     ChangeActive(u32),
     MakeNote(String),
+    PrintNotes(u32),
     NoCmd,
 }
 
@@ -129,7 +126,8 @@ fn change_job_yaml(newjob: u32) {
 
 }
 
-fn grep_as_lines(path: File, query: String) -> Vec<String> {
+
+fn grep_as_lines(path: PathBuf, query: String) -> Vec<String> {
     // Vec to store the matches to the query
     let mut matches = Vec::<String>::new();
 
@@ -144,16 +142,32 @@ fn grep_as_lines(path: File, query: String) -> Vec<String> {
     let matcher = grep::regex::RegexMatcher::new(&query).unwrap();
     
     // Build UTF8 sink
-    let sink = grep::searcher::sinks::UTF8(| line_number, line | {
+    let sink = grep::searcher::sinks::UTF8(| _line_number, line | {
         match matcher.find(line.as_bytes()).unwrap() {
-            Some(_) => { matches.push(line.to_string()); },
+            Some(_) => { matches.push(trim_newline(line.to_string())); },
             None => {}
         }
         Ok(true)
     });
 
-    let out = searcher.search_file(&matcher, &path, sink);
-    println!("{:?}", out);
+    let _out = searcher.search_path(&matcher, &path, sink);
+    // println!("{:?}", out);
     // return matches after running the search
     matches
+}
+
+fn trim_newline(mut string: String) -> String {
+    if string.ends_with("\n") {
+        string.pop();
+        if string.ends_with("\r") {
+            string.pop();
+        }
+    }
+    string
+}
+
+fn get_paths(dir: &PathBuf) -> Vec<String> {
+    let mut ls: Vec<_> = read_dir(dir).expect("Unable to read file system").map(|opt| { opt.unwrap().path().to_string_lossy().into_owned()} ).collect();
+    ls.natural_sort::<str>();
+    ls
 }
