@@ -86,6 +86,14 @@ impl Command {
                     notes.iter().for_each(|note| println!("{}\n", note));
                 }
             }
+            Intent::GetConfigLocation => {
+                let dirs = ProjectDirs::from("com", "SwissArmyWrench", "Workjournal").unwrap(); // SAFE
+                let mut config_path = dirs.config_dir().to_owned();
+                config_path.push("config.yaml");
+                println!("Workjournal expects its configuration file to be located at:\n{}", config_path.display());
+
+            }
+            Intent::GetCurrentJob => {println!("Job {} is currently active", self.config.active_job.to_string())}
             _ => {}
         }
     }
@@ -103,6 +111,8 @@ pub enum Intent {
     ChangeActive(u32),
     MakeNote(String),
     PrintNotes(u32),
+    GetConfigLocation,
+    GetCurrentJob,
     NoCmd,
 }
 
