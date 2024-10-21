@@ -6,6 +6,10 @@ Workjournal stores information nearly exclusively in plain text and Markdown, wi
 
 Plus, it's written in Rust, a reliable, fast, and memory-safe language that runs on all platforms.
 
+## How do I use it?
+
+All the documentation lives in the "DOC" folder - see above!
+
 ## Pardon the dust!
 
-Workjournal is still under construction - so it's not yet ready to use! As more and more features get added, I'll mention them here.
+Workjournal 1.0.0 is usable, but still rough around the edges. Please be patient! Improvements and new features will be coming soon, and I expect to be updating this tool quite rapidly! 
