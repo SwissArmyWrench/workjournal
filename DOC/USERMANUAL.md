@@ -32,7 +32,7 @@ Workjournal uses the `directories` crate to handle the locations of config direc
 
 | Platform | Path |
 | -------- | --------- |
-| Windows | C:\Users\Alice\AppData\Local\workjournal\johnnybgoode\config\config.yaml |
+| Windows | C:\Users\Alice\AppData\Roaming\SwissArmyWrench\workjournal\config\config.yaml |
 | Linux | /home/Alice/.config/workjournal/config.yaml |
 | MacOS | /Users/Alice/Library/Application Support/com.SwissArmyWrench.workjournal/config.yaml |
 
