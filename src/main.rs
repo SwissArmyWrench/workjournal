@@ -14,6 +14,10 @@ fn main() {
         intent = workjournal::Intent::MakeNote(note);
     } else if args[1] == "print" {
         intent = workjournal::Intent::PrintNotes(args[2].parse::<u32>().unwrap());
+    } else if args[1] == "active" {
+        intent = workjournal::Intent::GetCurrentJob;
+    } else if args[1] == "configpath" {
+        intent = workjournal::Intent::GetConfigLocation;
     }
 
     workjournal::Command::new(args, intent, workjournal::Config::load().unwrap()).run();
