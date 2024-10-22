@@ -80,9 +80,11 @@ impl Command {
             Intent::PrintNotes(job_number) => {
                 let pathlist = get_paths(&self.config.logging_folder);
                 for path in pathlist {
-                    println!("Job {job_number} in {}", &path);
                     let notes =
                         grep_as_lines(PathBuf::from(&path), format!("#{}", job_number.to_string()));
+                    if !notes.is_empty() {
+                        println!("Job {job_number} in {}", PathBuf::from(&path).file_stem().unwrap().to_string_lossy().to_string());
+                    }
                     notes.iter().for_each(|note| println!("{}\n", note));
                 }
             }
