@@ -115,7 +115,7 @@ fn change_job_yaml(newjob: u32) {
         std::fs::read_to_string(&config_path).expect("Unable to open config file to change jobs");
 
     // Regex to match on the key:value pair in the YAML
-    let regex = Regex::new(r"active_job: (?<number>\d{5})").unwrap();
+    let regex = Regex::new(r"active_job: (?<number>\d{1,5})").unwrap();
     let after = regex.replace_all(
         &config_string,
         format!("active_job: {}", newjob.to_string()),
