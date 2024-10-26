@@ -22,7 +22,8 @@ fn main() {
     } else if args[1] == "active" {
         intent = workjournal::Intent::GetCurrentJob;
     } else if args[1] == "configpath" {
-        intent = workjournal::Intent::GetConfigLocation;
+        workjournal::configpath();
+        std::process::exit(0)
     }
 
     workjournal::Command::new(args, intent, workjournal::Config::load().unwrap()).run();
