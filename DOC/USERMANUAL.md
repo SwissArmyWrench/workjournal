@@ -14,9 +14,9 @@ Workjournal is designed to be used in jobs where you deal with many jobs, ticket
 
 The change-active command changes the active job / order. Job numbers are stored as a u32 (at least for the time being) so alphanumeric values or numbers greater than 4,294,967,295 will cause problems. The active job is stored in the configuration file, and workjournal updates with value using regex find-and-replace in an effort to preserve comments in configuration. This behavior will be changed in the future and is not meant to be permanent.
 
-### `workjournal mknote <note....>`
+### `workjournal mknote [-j, --job jobnumber] <note....>`
 
-This command makes a note. All text typed after `mknote` is saved as a those, prepended with an HH:MM timestamp, and the active job number.
+This command makes a note. All text typed after `mknote` is saved as a those, prepended with an HH:MM timestamp, and the active job number. The `-j` or `--job` option may be passed to write a singular note to a different job number.
 
 ### `workjournal print <jobnumber>`
 
@@ -36,6 +36,8 @@ Workjournal uses the `directories` crate to handle the locations of config direc
 | Linux | /home/Alice/.config/workjournal/config.yaml |
 | MacOS | /Users/Alice/Library/Application Support/com.SwissArmyWrench.workjournal/config.yaml |
 
+In the even of any confusion, run `workjournal configpath` (see below) to see the exact location on your system.
+
 ### `active_job`
 
 This value is the current job number. It is overwritten by the system when the `chactive` command is issued. The program expects this to be a u32 - any values in this field that are not valid u32s will cause problems
@@ -47,3 +49,7 @@ This is an absolute path to the folder where workjournal will save / search for 
 ### `file_extension` [optional]
 
 This is an optional value to specify a file extension to use on the files workjournal creates. For example, on Windows, it would be best to set this to ".txt" or perhaps ".md".
+
+### `configpath`
+
+Prints the path at which Workjournal will look for the config.
