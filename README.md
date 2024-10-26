@@ -8,7 +8,7 @@ Plus, it's written in Rust, a reliable, fast, and memory-safe language that runs
 
 # Version 1.1.0 is here!
 
-This version fixes a few small bugs and adds a few QoL features. Read the full changelog [here.](https://github.com/SwissArmyWrench/workjournal/blob/master/README.md)
+This version fixes a few small bugs and adds a few QoL features. Read the full changelog [here.](https://github.com/SwissArmyWrench/workjournal/blob/master/DOC/CHANGELOG.md)
 
 ## How do I use it?
 
