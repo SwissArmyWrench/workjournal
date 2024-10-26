@@ -13,6 +13,4 @@
 - [ ] Interactive mode
 - [ ] Nushell output
 - [ ] Sub-tickets (to track burn or drill etc)
-- [ ] Open all PDFs in a job folder with one command
-- [ ] Open job folder with one command
 - [ ] Status fields for a given ticket (open, closed, rfi, paused, error, etc)
