@@ -6,10 +6,14 @@ Workjournal stores information nearly exclusively in plain text and Markdown, wi
 
 Plus, it's written in Rust, a reliable, fast, and memory-safe language that runs on all platforms.
 
+# Version 1.1.0 is here!
+
+This version fixes a few small bugs and adds a few QoL features. Read the full changelog [here.](https://github.com/SwissArmyWrench/workjournal/blob/master/README.md)
+
 ## How do I use it?
 
 All the documentation lives in the "DOC" folder - see above!
 
 ## Pardon the dust!
 
-Workjournal 1.0.0 is usable, but still rough around the edges. Please be patient! Improvements and new features will be coming soon, and I expect to be updating this tool quite rapidly! 
+Workjournal 1.1.0 is usable, but still rough around the edges. Please be patient! Improvements and new features will be coming soon, and I expect to be updating this tool quite rapidly! 
