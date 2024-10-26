@@ -10,8 +10,13 @@ fn main() {
     } else if args[1] == "chactive" {
         intent = workjournal::Intent::ChangeActive(args[2].parse::<u32>().unwrap());
     } else if args[1] == "mknote" {
-        let note = env::args().skip(2).collect::<Vec<String>>().join(" ");
-        intent = workjournal::Intent::MakeNote(note);
+        if args[2] == "-j" || args[2] == "--job" {
+            let note = env::args().skip(4).collect::<Vec<String>>().join(" ");
+            intent = workjournal::Intent::MakeNoteOnJob(note, args[3].parse::<u32>().unwrap());
+        } else {
+            let note = env::args().skip(2).collect::<Vec<String>>().join(" ");
+            intent = workjournal::Intent::MakeNote(note);
+        }
     } else if args[1] == "print" {
         intent = workjournal::Intent::PrintNotes(args[2].parse::<u32>().unwrap());
     } else if args[1] == "active" {

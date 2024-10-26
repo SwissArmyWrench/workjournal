@@ -43,7 +43,7 @@ impl Config {
                 .create(true)
                 .append(true)
                 .open(fullpath)
-                .unwrap(),
+                .unwrap()
         }
     }
 
@@ -73,6 +73,13 @@ impl Command {
                 let _ = &self.config.get_today_handle().write(
                     format!("{time} #{0} {note}\n", self.config.active_job.to_string()).as_bytes(),
                 );
+            }
+            Intent::MakeNoteOnJob(note, number) => {
+                let time = chrono::Local::now().time().format("%H:%M").to_string();
+                let _ = &self.config.get_today_handle().write(
+                    format!("{time} #{0} {note}\n", number.to_string()).as_bytes(),
+                );
+
             }
             Intent::ChangeActive(job_number) => {
                 change_job_yaml(job_number);
@@ -112,6 +119,7 @@ impl Command {
 pub enum Intent {
     ChangeActive(u32),
     MakeNote(String),
+    MakeNoteOnJob(String, u32),
     PrintNotes(u32),
     GetConfigLocation,
     GetCurrentJob,
