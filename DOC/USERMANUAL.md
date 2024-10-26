@@ -22,6 +22,14 @@ This command makes a note. All text typed after `mknote` is saved as a those, pr
 
 This command prints out all of the notes taken about a given job number. It uses the internal libraries developed for `ripgrep` to do this.
 
+### `active`
+
+Prints the current active order.
+
+### `configpath`
+
+Prints the path at which Workjournal will look for the config.
+
 ## Configuration
 
 An example configuration file is provided in DOC/config.yaml.
@@ -50,6 +58,4 @@ This is an absolute path to the folder where workjournal will save / search for 
 
 This is an optional value to specify a file extension to use on the files workjournal creates. For example, on Windows, it would be best to set this to ".txt" or perhaps ".md".
 
-### `configpath`
 
-Prints the path at which Workjournal will look for the config.
