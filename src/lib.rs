@@ -2,7 +2,7 @@
 
 use directories::ProjectDirs;
 use grep::matcher::Matcher;
-use natural_sort_rs::{Natural, NaturalSort};
+use natural_sort_rs::NaturalSort;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::fs::{read_dir, File, OpenOptions};
@@ -79,13 +79,7 @@ impl Command {
                     format!("{time} #{0} {note}\n", job.to_string()).as_bytes(),
                 );
             }
-            /*Intent::MakeNoteOnJob(note, number) => {
-                let time = chrono::Local::now().time().format("%H:%M").to_string();
-                let _ = &self.config.get_today_handle().write(
-                    format!("{time} #{0} {note}\n", number.to_string()).as_bytes(),
-                );
 
-            }*/
             Subcommands::Chactive {jobnumber} => {
                 change_job_yaml(jobnumber);
             }
@@ -107,23 +101,13 @@ impl Command {
 
     pub fn new(args: Vec<String>, intent: Subcommands, config: Config) -> Command {
         Command {
-            args: args,
-            intent: intent,
-            config: config,
+            args,
+            intent,
+            config,
         }
     }
 }
 
-/*
-pub enum Intent {
-    ChangeActive(u32),
-    MakeNote(String),
-    MakeNoteOnJob(String, u32),
-    PrintNotes(u32),
-    GetCurrentJob,
-    NoCmd,
-}
-*/
 
 #[derive(Debug, Clone, Subcommand)]
 pub enum Subcommands {
