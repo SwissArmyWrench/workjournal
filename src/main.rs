@@ -1,24 +1,22 @@
-use std::env;
+use clap::Parser;
+use std::env::args;
+use workjournal::{Command, Subcommands, Config};
+
+#[derive(Parser, Debug)]
+#[command(version = "1.1.0", about = "Keeping notes on your workday, easily, in the terminal")]
+struct CmdIn {
+    #[command(subcommand)]
+    command: Subcommands,
+    
+}
+
+
+
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    // workjournal::wip();
-
-    let mut intent: workjournal::Intent = workjournal::Intent::NoCmd;
-    if args.len() == 1 {
-        println!("Interactive mode not yet ready!")
-    } else if args[1] == "chactive" {
-        intent = workjournal::Intent::ChangeActive(args[2].parse::<u32>().unwrap());
-    } else if args[1] == "mknote" {
-        let note = env::args().skip(2).collect::<Vec<String>>().join(" ");
-        intent = workjournal::Intent::MakeNote(note);
-    } else if args[1] == "print" {
-        intent = workjournal::Intent::PrintNotes(args[2].parse::<u32>().unwrap());
-    } else if args[1] == "active" {
-        intent = workjournal::Intent::GetCurrentJob;
-    } else if args[1] == "configpath" {
-        intent = workjournal::Intent::GetConfigLocation;
-    }
-
-    workjournal::Command::new(args, intent, workjournal::Config::load().unwrap()).run();
+    Command::new( 
+        args().collect(), 
+        CmdIn::parse().command,
+        Config::load().expect("Error loading config")
+        ).run()
 }
