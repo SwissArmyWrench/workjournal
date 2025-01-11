@@ -7,10 +7,7 @@ use workjournal::{Command, Subcommands, Config};
 struct CmdIn {
     #[command(subcommand)]
     command: Subcommands,
-    
 }
-
-
 
 
 fn main() {
