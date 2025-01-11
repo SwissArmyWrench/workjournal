@@ -14,7 +14,7 @@ struct CmdIn {
 
 
 fn main() {
-    let intent = match CmdIn::parse().command {
+    /*let intent = match CmdIn::parse().command {
         Subcommands::Mknote {note, job} => {workjournal::Intent::MakeNoteOnJob(note, job.unwrap())},
         Subcommands::Chactive {jobnumber} => {workjournal::Intent::ChangeActive(jobnumber)},
         Subcommands::Active => {workjournal::Intent::GetCurrentJob},
@@ -24,10 +24,10 @@ fn main() {
         Subcommands::Print {jobnumber} => {workjournal::Intent::PrintNotes(jobnumber)},
 
         // _ => todo!()
-    };
+    };*/
     workjournal::Command::new( 
         args().collect(), 
-        intent,
+        CmdIn::parse().command,
         workjournal::Config::load().expect("Error loading config")
         ).run()
 

@@ -12,7 +12,7 @@ use clap::Subcommand;
 
 /*pub fn wip() {
     // WIP
-    let config = Config::load();
+    let config = Config::load(); 
     let command = Command { args: Vec::new(), config: config.expect("couldn't load config"), intent: Intent::PrintNotes(49882) };
     command.run();
 }*/
@@ -61,7 +61,7 @@ impl Config {
 
 pub struct Command {
     args: Vec<String>,
-    intent: Intent,
+    intent: Subcommands,
     config: Config,
 }
 
@@ -69,39 +69,43 @@ impl Command {
     pub fn run(self) {
         // println!("Running...");
         match self.intent {
-            Intent::MakeNote(note) => {
+            Subcommands::Mknote {note, job}  => {
+                let job = match job {
+                    Some(jobnumber) => jobnumber,
+                    None => self.config.active_job
+                };
                 let time = chrono::Local::now().time().format("%H:%M").to_string();
                 let _ = &self.config.get_today_handle().write(
-                    format!("{time} #{0} {note}\n", self.config.active_job.to_string()).as_bytes(),
+                    format!("{time} #{0} {note}\n", job.to_string()).as_bytes(),
                 );
             }
-            Intent::MakeNoteOnJob(note, number) => {
+            /*Intent::MakeNoteOnJob(note, number) => {
                 let time = chrono::Local::now().time().format("%H:%M").to_string();
                 let _ = &self.config.get_today_handle().write(
                     format!("{time} #{0} {note}\n", number.to_string()).as_bytes(),
                 );
 
+            }*/
+            Subcommands::Chactive {jobnumber} => {
+                change_job_yaml(jobnumber);
             }
-            Intent::ChangeActive(job_number) => {
-                change_job_yaml(job_number);
-            }
-            Intent::PrintNotes(job_number) => {
+            Subcommands::Print {jobnumber} => {
                 let pathlist = get_paths(&self.config.logging_folder);
                 for path in pathlist {
                     let notes =
-                        grep_as_lines(PathBuf::from(&path), format!("#{}", job_number.to_string()));
+                        grep_as_lines(PathBuf::from(&path), format!("#{}", jobnumber.to_string()));
                     if !notes.is_empty() {
-                        println!("Job {job_number} in {}", PathBuf::from(&path).file_stem().unwrap().to_string_lossy().to_string());
+                        println!("Job {jobnumber} in {}", PathBuf::from(&path).file_stem().unwrap().to_string_lossy().to_string());
                     }
                     notes.iter().for_each(|note| println!("{}\n", note));
                 }
             }
-            Intent::GetCurrentJob => {println!("Job {} is currently active", self.config.active_job.to_string())}
+            Subcommands::Active => {println!("Job {} is currently active", self.config.active_job.to_string())}
             _ => {}
         }
     }
 
-    pub fn new(args: Vec<String>, intent: Intent, config: Config) -> Command {
+    pub fn new(args: Vec<String>, intent: Subcommands, config: Config) -> Command {
         Command {
             args: args,
             intent: intent,
@@ -110,6 +114,7 @@ impl Command {
     }
 }
 
+/*
 pub enum Intent {
     ChangeActive(u32),
     MakeNote(String),
@@ -118,6 +123,7 @@ pub enum Intent {
     GetCurrentJob,
     NoCmd,
 }
+*/
 
 #[derive(Debug, Clone, Subcommand)]
 pub enum Subcommands {
