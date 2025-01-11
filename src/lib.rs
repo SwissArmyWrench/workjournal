@@ -116,6 +116,7 @@ pub enum Intent {
     PrintNotes(u32),
     GetCurrentJob,
     NoCmd,
+    Batch(Vec<Intent>),
 }
 
 pub fn configpath() {
